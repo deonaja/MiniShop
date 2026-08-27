@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,6 +26,10 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        $this->call(ProductSeeder::class);
+        // Only seed products on a fresh database so redeploys don't duplicate
+        // rows or reset stock that live orders have already decremented.
+        if (Product::count() === 0) {
+            $this->call(ProductSeeder::class);
+        }
     }
 }

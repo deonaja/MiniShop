@@ -16,9 +16,8 @@ frontend/dist/
 PROGRESS.md
 setup-admin.ps1
 
-# Assignment / internal docs (not part of the deliverable code)
+# Assignment brief (Roketin's document, not ours to redistribute)
 *.pdf
-SETUP_AND_BUILD.md
 
 # OS / editor
 .DS_Store

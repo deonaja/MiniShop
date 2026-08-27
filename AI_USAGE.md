@@ -1,24 +1,24 @@
 # AI Usage
 
-## Tools
+## Tools yang dipakai
 
-- **Claude Code** (Anthropic) — used as the primary development assistant to scaffold the backend and frontend, write the API, checkout logic, tests, and this documentation, and to run/verify the app end-to-end.
+- **Claude Code** (Anthropic) — dipakai sebagai asisten utama untuk scaffold backend & frontend, menulis API, logika checkout, test, dokumentasi, sekaligus menjalankan & memverifikasi aplikasi secara end-to-end.
 
-## How AI was used
+## Bagaimana AI dipakai
 
-- Generated the Laravel data model (migrations, models, factory, seeder), REST controllers, Form Requests, API Resources, and the transactional `CheckoutService`.
-- Generated the React SPA (catalog, product detail, cart/checkout, admin login, product CRUD, orders) with Tailwind styling and a client-side cart Context.
-- Wrote the PHPUnit feature tests and iterated until all passed.
-- Verified the running stack: API smoke tests, the Vite→Laravel proxy, a real checkout (stock decrement + oversell rejection), and a rendered screenshot of the catalog.
+- Men-generate data model Laravel (migration, model, factory, seeder), controller REST, Form Request, API Resource, dan `CheckoutService` yang transaksional.
+- Men-generate SPA React (catalog, detail produk, cart/checkout, login admin, CRUD produk, list order) beserta styling Tailwind dan cart client-side berbasis Context.
+- Menulis feature test PHPUnit dan mengiterasinya sampai semua lulus.
+- Memverifikasi aplikasi yang berjalan: smoke test API, proxy Vite→Laravel, checkout nyata (pengurangan stok + penolakan over-order), dan pengecekan tampilan responsif via screenshot.
 
-All AI-generated code was reviewed and the app was verified to run before submission.
+Semua kode hasil AI sudah ditinjau ulang dan aplikasi dipastikan berjalan sebelum dikumpulkan.
 
-## Example crucial prompts
+## Contoh prompt krusial
 
-**1. Transactional checkout (the core correctness requirement)**
+**1. Checkout transaksional (inti requirement — kurangi stok saat checkout)**
 
-> "Implement checkout in Laravel as a service: wrap it in a DB transaction, lock the involved product rows with `lockForUpdate`, merge duplicate `product_id` lines before checking stock, reject with a 422 validation error if any quantity exceeds available stock, decrement stock, and create the order with snapshotted `product_name`/`price` on each order item so later product edits don't rewrite historical orders."
+> "Implementasikan checkout di Laravel sebagai service: bungkus dalam DB transaction, kunci baris produk terkait dengan `lockForUpdate`, gabungkan baris `product_id` yang duplikat sebelum cek stok, tolak dengan error validasi 422 jika ada qty yang melebihi stok tersedia, kurangi stok, lalu buat order dengan snapshot `product_name`/`price` di tiap order item supaya edit produk di kemudian hari tidak mengubah order lama."
 
-**2. Client-side cart with stock validation**
+**2. Cart client-side dengan validasi stok**
 
-> "Build a React cart as a Context + useReducer persisted to localStorage. Cart lives entirely on the client and only becomes a DB order at checkout. Cap each line's quantity at the product's stock when adding or editing, expose totalItems/totalPrice, and on checkout POST `{items:[{product_id, qty}]}` to `/api/checkout`, showing the server's stock error message if it returns 422."
+> "Buat cart React sebagai Context + useReducer yang dipersist ke localStorage. Cart sepenuhnya di sisi client dan baru jadi order di database saat checkout. Batasi qty tiap baris maksimal sebesar stok produk saat ditambah atau diubah, sediakan totalItems/totalPrice, dan saat checkout kirim `{items:[{product_id, qty}]}` ke `/api/checkout`, tampilkan pesan error stok dari server bila mengembalikan 422."

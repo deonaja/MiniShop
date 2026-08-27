@@ -2,6 +2,14 @@
 
 A small full-stack e-commerce demo: browse a product catalog, manage a client-side cart, check out with atomic stock handling, and administer products/orders behind admin authentication.
 
+## Live Demo
+
+- **App (frontend):** https://mini-shop-self.vercel.app
+- **API (backend):** https://elegant-exploration-production.up.railway.app/api/products
+
+> Admin login — email `admin@minishop.test`, password `password`.
+> The backend runs on a free tier; the first request after idle may take a few seconds to wake up.
+
 ## Tech Stack & Why
 
 | Layer | Choice | Reason |

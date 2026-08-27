@@ -2,23 +2,31 @@
 
 ## Tools yang dipakai
 
-- **Claude Code** (Anthropic) — dipakai sebagai asisten utama untuk scaffold backend & frontend, menulis API, logika checkout, test, dokumentasi, sekaligus menjalankan & memverifikasi aplikasi secara end-to-end.
+- **Claude Code** (Anthropic) — satu-satunya AI assistant, dipakai untuk perencanaan, implementasi, testing, verifikasi, dan dokumentasi.
 
-## Bagaimana AI dipakai
+## Cara saya memakai AI
 
-- Men-generate data model Laravel (migration, model, factory, seeder), controller REST, Form Request, API Resource, dan `CheckoutService` yang transaksional.
-- Men-generate SPA React (catalog, detail produk, cart/checkout, login admin, CRUD produk, list order) beserta styling Tailwind dan cart client-side berbasis Context.
-- Menulis feature test PHPUnit dan mengiterasinya sampai semua lulus.
-- Memverifikasi aplikasi yang berjalan: smoke test API, proxy Vite→Laravel, checkout nyata (pengurangan stok + penolakan over-order), dan pengecekan tampilan responsif via screenshot.
+Pendekatan saya: **rencanakan dulu, review ketat, baru eksekusi** — bukan menyerahkan semua mentah-mentah ke AI.
 
-Semua kode hasil AI sudah ditinjau ulang dan aplikasi dipastikan berjalan sebelum dikumpulkan.
+- **Diskusi & perencanaan dulu.** Sebelum ngoding, saya diskusi arah teknis lalu mengarahkan penyusunan runbook `SETUP_AND_BUILD.md` (keputusan stack, data model, daftar endpoint, dan urutan fase — termasuk "checkout transaksional `lockForUpdate` + kurangi stok"). AI yang menuliskan drafnya, tapi saya yang menentukan keputusan & preset (mis. password DB), dan **mereview drafnya sebelum satu baris kode pun dibuat**.
+- **Kurasi tooling sendiri.** Saya memilih skill referensi yang dipakai (`laravel-patterns`, `laravel-security`, `react-patterns`, `frontend-design`, `api-design`) dan menolak yang overkill, dengan alasan fokus ke kualitas kode (softdev), bukan pamer.
+- **Infra manual.** Install PostgreSQL dan sebagian download saya kerjakan sendiri (lebih hemat & andal); AI hanya menyiapkan skrip + panduan.
+- **Review iteratif + fact-check.** Saya memverifikasi output AI di tiap tahap dan mengoreksi bila melenceng dari requirement — misalnya mempertanyakan standar testing yang tidak ada di soal, dan mengarahkan perbaikan UX secara spesifik.
 
-## Contoh prompt krusial
+## Contoh prompt yang saya pakai (verbatim)
 
-**1. Checkout transaksional (inti requirement — kurangi stok saat checkout)**
+**1. Menyusun runbook rencana — inilah yang memuat logika krusial (checkout + cart):**
 
-> "Implementasikan checkout di Laravel sebagai service: bungkus dalam DB transaction, kunci baris produk terkait dengan `lockForUpdate`, gabungkan baris `product_id` yang duplikat sebelum cek stok, tolak dengan error validasi 422 jika ada qty yang melebihi stok tersedia, kurangi stok, lalu buat order dengan snapshot `product_name`/`price` di tiap order item supaya edit produk di kemudian hari tidak mengubah order lama."
+> "aku mending nyusun 1 md yang kalo dijalanin bakal setup semua-muanya yang kita rencanakan tanpa ada stop dengan loop goal yang bagus. masuk secara logika ga?"
+>
+> "preset aja postgres123, review md yang bakal kamu buat dulu."
 
-**2. Cart client-side dengan validasi stok**
+Hasilnya `SETUP_AND_BUILD.md` yang jadi acuan implementasi — memuat spesifikasi krusial: **checkout transaksional dengan `lockForUpdate` + pengurangan stok**, dan **cart client-side**. Eksekusi build lalu saya picu dengan prompt singkat: *"aku mau jalanin SETUP_AND_BUILD.md, coba baca konteks"* dan *"lanjut frontend"*.
 
-> "Buat cart React sebagai Context + useReducer yang dipersist ke localStorage. Cart sepenuhnya di sisi client dan baru jadi order di database saat checkout. Batasi qty tiap baris maksimal sebesar stok produk saat ditambah atau diubah, sediakan totalItems/totalPrice, dan saat checkout kirim `{items:[{product_id, qty}]}` ke `/api/checkout`, tampilkan pesan error stok dari server bila mengembalikan 422."
+**2. Mengarahkan perbaikan kualitas UX (review-driven):**
+
+> "banyak design system yang bikin ux jelek, harus diperhatikan. 1. pas klik tombol add, user ga feel mencet tombolnya jadi rasanya ke-tambah di cart. 2. modal new product: input price buat jelas dolarnya, category buat dropdown yang bisa diinput custom, auto filter input admin jadi upper case awalan. 3. highlight menu admin, jangan campur dengan menu user, jangan terlalu lebay."
+
+## Catatan jujur
+
+Beberapa hal yang sempat dimasukkan AI tapi **tidak ada di soal** saya coret setelah dicek — misalnya target coverage test 80% yang ternyata berasal dari konfigurasi global saya, bukan brief Roketin. Testing akhirnya dibatasi ke 2 logika yang memang disebut krusial di soal (kalkulasi cart + pengurangan stok).

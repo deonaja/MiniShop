@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased;
+}
+
+/* Shared form control used by the admin product modal. */
+.input {
+  @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500;
+}
+
+/* Subtle press feedback for buttons — makes interactions feel "clicky". */
+.btn-press {
+  @apply transition-transform duration-150 active:scale-95;
+}
+
+/* Modal entrance animations (backdrop fade + card pop). */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.fade-in {
+  animation: fadeIn 0.15s ease-out;
+}
+.modal-pop {
+  animation: modalPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-press,
+  .fade-in,
+  .modal-pop {
+    animation: none;
+    transition: none;
+  }
+}

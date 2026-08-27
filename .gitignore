@@ -1,0 +1,27 @@
+# Root monorepo ignores (backend/ and frontend/ have their own too)
+
+# Environments / secrets
+**/.env
+!**/.env.example
+
+# Dependencies
+backend/vendor/
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+
+# Tooling / local artifacts
+.playwright-cli/
+PROGRESS.md
+setup-admin.ps1
+
+# Assignment / internal docs (not part of the deliverable code)
+*.pdf
+SETUP_AND_BUILD.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
